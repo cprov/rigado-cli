@@ -1,0 +1,33 @@
+name: rigado-cli
+summary: Rigado CLI
+description: |
+  Rigado CLI with bash completions.
+icon: rigado.png
+adopt-info: rigado-assets
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: amd64
+
+parts:
+  rigado-assets:
+    plugin: nil
+    override-pull: |
+      echo "Downloading CLI ..."
+      mkdir -p ${SNAPCRAFT_PART_INSTALL}/usr/bin/
+      wget --quiet -O ${SNAPCRAFT_PART_INSTALL}/usr/bin/rigado-cli https://downloads.rigado.com/cli/linux/rigado
+      echo "Downloading bash completer ..."
+      mkdir -p ${SNAPCRAFT_PART_INSTALL}/etc/bash_completion.d/
+      wget --quiet -O ${SNAPCRAFT_PART_INSTALL}/etc/bash_completion.d/rigado_completion.sh https://downloads.rigado.com/cli/linux/rigado_completion.sh
+      chmod +x ${SNAPCRAFT_PART_INSTALL}/usr/bin/rigado-cli
+      snapcraftctl set-version "V0.1-20181102"
+    build-packages:
+      - wget
+
+apps:
+  rigado-cli:
+    command: usr/bin/rigado-cli
+    completer: etc/bash_completion.d/rigado_completion.sh
+    plugs: [network, network-bind]
