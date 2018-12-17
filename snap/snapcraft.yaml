@@ -22,7 +22,9 @@ parts:
       mkdir -p ${SNAPCRAFT_PART_INSTALL}/etc/bash_completion.d/
       wget --quiet -O ${SNAPCRAFT_PART_INSTALL}/etc/bash_completion.d/rigado_completion.sh https://downloads.rigado.com/cli/linux/rigado_completion.sh
       chmod +x ${SNAPCRAFT_PART_INSTALL}/usr/bin/rigado-cli
-      snapcraftctl set-version "V0.1-20181102"
+      RIGADO_VERSION="$(${SNAPCRAFT_PART_INSTALL}/usr/bin/rigado-cli version | sed -e 's/.* Version: \(.*\) Build Time: \(.*\)_.* Hash: \(.*\) /\1+\2;\3/g' | sed -e 's/\-//g' | sed -e 's/;/\-/g')"
+      echo "Current version: '${RIGADO_VERSION}'"
+      snapcraftctl set-version "${RIGADO_VERSION}"
     build-packages:
       - wget
 
